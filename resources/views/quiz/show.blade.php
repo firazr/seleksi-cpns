@@ -54,35 +54,51 @@
                     </span>
                     
                     <div class="flex justify-between items-start mb-4 gap-4">
-                        <span class="px-3 py-1 bg-blue-500/30 text-blue-200 rounded-full text-sm font-medium">{{ $question->category }}</span>
+                        <div class="flex items-center gap-2">
+                            <span class="px-3 py-1 bg-blue-500/30 text-blue-200 rounded-full text-sm font-medium">{{ $question->category }}</span>
+                            @if($question->is_math)
+                            <span class="px-3 py-1 bg-purple-500/30 text-purple-200 rounded-full text-sm font-medium">
+                                <i class="bi bi-calculator me-1"></i> Matematika
+                            </span>
+                            @endif
+                        </div>
                         <button type="button" class="btn-flag px-4 py-2 rounded-xl bg-yellow-500/30 border border-yellow-500/50 text-white hover:bg-yellow-500/50 transition-all text-sm font-medium" id="flagBtn-{{ $index }}" onclick="toggleFlag({{ $index }})">
                             <i class="bi bi-flag mr-1"></i> Tandai Ragu
                         </button>
                     </div>
                     
+                    <!-- Question Image (if exists) -->
+                    @if($question->image_path)
+                    <div class="mb-4 rounded-xl overflow-hidden bg-white/10 p-2">
+                        <img src="{{ asset('storage/' . $question->image_path) }}" 
+                             alt="Gambar Soal {{ $index + 1 }}" 
+                             class="max-w-full h-auto max-h-64 mx-auto rounded-lg">
+                    </div>
+                    @endif
+                    
                     <div class="question-text text-lg text-white mb-6 leading-relaxed" id="questionText-{{ $index }}">
-                        {{ $question->question_text }}
+                        {!! nl2br(e($question->question_text)) !!}
                     </div>
                     
                     <div class="space-y-3">
                         <div class="option-item flex items-center gap-4 p-4 rounded-xl bg-white/10 border-2 border-white/20 cursor-pointer hover:bg-white/20 hover:border-white/40 hover:translate-x-1 transition-all" onclick="selectOption({{ $index }}, 'a')">
                             <div class="option-label w-10 h-10 rounded-full bg-white/20 flex items-center justify-center font-bold text-white flex-shrink-0">A</div>
-                            <div class="option-text text-white flex-grow">{{ $question->option_a }}</div>
+                            <div class="option-text text-white flex-grow">{!! nl2br(e($question->option_a)) !!}</div>
                             <input type="radio" name="answers[{{ $question->id }}]" value="a" class="hidden answer-input" data-index="{{ $index }}">
                         </div>
                         <div class="option-item flex items-center gap-4 p-4 rounded-xl bg-white/10 border-2 border-white/20 cursor-pointer hover:bg-white/20 hover:border-white/40 hover:translate-x-1 transition-all" onclick="selectOption({{ $index }}, 'b')">
                             <div class="option-label w-10 h-10 rounded-full bg-white/20 flex items-center justify-center font-bold text-white flex-shrink-0">B</div>
-                            <div class="option-text text-white flex-grow">{{ $question->option_b }}</div>
+                            <div class="option-text text-white flex-grow">{!! nl2br(e($question->option_b)) !!}</div>
                             <input type="radio" name="answers[{{ $question->id }}]" value="b" class="hidden answer-input" data-index="{{ $index }}">
                         </div>
                         <div class="option-item flex items-center gap-4 p-4 rounded-xl bg-white/10 border-2 border-white/20 cursor-pointer hover:bg-white/20 hover:border-white/40 hover:translate-x-1 transition-all" onclick="selectOption({{ $index }}, 'c')">
                             <div class="option-label w-10 h-10 rounded-full bg-white/20 flex items-center justify-center font-bold text-white flex-shrink-0">C</div>
-                            <div class="option-text text-white flex-grow">{{ $question->option_c }}</div>
+                            <div class="option-text text-white flex-grow">{!! nl2br(e($question->option_c)) !!}</div>
                             <input type="radio" name="answers[{{ $question->id }}]" value="c" class="hidden answer-input" data-index="{{ $index }}">
                         </div>
                         <div class="option-item flex items-center gap-4 p-4 rounded-xl bg-white/10 border-2 border-white/20 cursor-pointer hover:bg-white/20 hover:border-white/40 hover:translate-x-1 transition-all" onclick="selectOption({{ $index }}, 'd')">
                             <div class="option-label w-10 h-10 rounded-full bg-white/20 flex items-center justify-center font-bold text-white flex-shrink-0">D</div>
-                            <div class="option-text text-white flex-grow">{{ $question->option_d }}</div>
+                            <div class="option-text text-white flex-grow">{!! nl2br(e($question->option_d)) !!}</div>
                             <input type="radio" name="answers[{{ $question->id }}]" value="d" class="hidden answer-input" data-index="{{ $index }}">
                         </div>
                     </div>
@@ -340,6 +356,11 @@
         
         currentQuestion = index;
         updateButtons();
+        
+        // Re-render MathJax for the visible question
+        if (typeof MathJax !== 'undefined' && MathJax.typesetPromise) {
+            MathJax.typesetPromise([document.getElementById('question-' + index)]);
+        }
     }
     
     function nextQuestion() {

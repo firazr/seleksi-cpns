@@ -163,7 +163,7 @@
                     <i class="bi bi-plus-circle"></i> Tambah Soal Baru
                 </h3>
             </div>
-            <form action="{{ route('admin.questions.store') }}" method="POST">
+            <form action="{{ route('admin.questions.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="p-6 space-y-5 max-h-[70vh] overflow-y-auto">
                     <div>
@@ -180,7 +180,27 @@
                         <label class="block text-white font-medium mb-2">Pertanyaan</label>
                         <textarea name="question_text" rows="4" required 
                             class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/50 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all resize-none"
-                            placeholder="Masukkan teks pertanyaan..."></textarea>
+                            placeholder="Masukkan teks pertanyaan... Gunakan $rumus$ untuk rumus matematika"></textarea>
+                        <p class="text-white/50 text-xs mt-1">Tip: Gunakan $...$ untuk rumus matematika inline, contoh: $\frac{x}{y}$</p>
+                    </div>
+                    
+                    <!-- Image Upload -->
+                    <div>
+                        <label class="block text-white font-medium mb-2">
+                            <i class="bi bi-image me-1"></i> Gambar Soal (Opsional)
+                        </label>
+                        <input type="file" name="image" accept="image/*"
+                            class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-blue-600 file:text-white file:cursor-pointer">
+                        <p class="text-white/50 text-xs mt-1">Format: JPG, PNG, GIF, SVG. Maks: 2MB</p>
+                    </div>
+                    
+                    <!-- Math Toggle -->
+                    <div class="flex items-center gap-3">
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" name="is_math" value="1" class="sr-only peer">
+                            <div class="w-11 h-6 bg-white/20 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                        </label>
+                        <span class="text-white font-medium">Soal Matematika (dengan rumus)</span>
                     </div>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">

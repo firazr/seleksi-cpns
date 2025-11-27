@@ -17,6 +17,13 @@ class Question extends Model
         'option_c',
         'option_d',
         'correct_option',
+        'image_path',
+        'is_math',
+        'math_latex',
+    ];
+
+    protected $casts = [
+        'is_math' => 'boolean',
     ];
 
     /**

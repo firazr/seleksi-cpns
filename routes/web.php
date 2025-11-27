@@ -21,6 +21,7 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // News/Berita Routes
 Route::get('/berita', [NewsController::class, 'index'])->name('berita.index');
+Route::get('/berita/hasil-test', [NewsController::class, 'getHasilTest'])->name('berita.hasil-test');
 Route::get('/berita/{news}', [NewsController::class, 'show'])->name('berita.show');
 
 // Profil Routes

@@ -3,11 +3,28 @@
 namespace App\Http\Controllers;
 
 use App\Models\News;
+use App\Models\TestSession;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class NewsController extends Controller
 {
+    /**
+     * List of available domisili
+     */
+    protected $domisiliList = [
+        'Jakarta',
+        'Bandung',
+        'Surabaya',
+        'Yogyakarta',
+        'Semarang',
+        'Medan',
+        'Makassar',
+        'Palembang',
+        'Denpasar',
+        'Pontianak',
+    ];
+
     /**
      * Display a listing of news
      */
@@ -24,8 +41,58 @@ class NewsController extends Controller
         }
         
         $news = $query->paginate(9);
+        $domisiliList = $this->domisiliList;
         
-        return view('berita.index', compact('news'));
+        // Get test results if domisili_hasil is selected
+        $hasilTest = collect();
+        $selectedDomisili = $request->get('domisili_hasil');
+        
+        if ($selectedDomisili) {
+            $hasilTest = TestSession::with('user')
+                ->where('domisili_penempatan', $selectedDomisili)
+                ->whereNotNull('finished_at')
+                ->orderByDesc('score')
+                ->orderBy('finished_at')
+                ->get();
+        }
+        
+        return view('berita.index', compact('news', 'domisiliList', 'hasilTest', 'selectedDomisili'));
+    }
+
+    /**
+     * Get test results by domisili (AJAX)
+     */
+    public function getHasilTest(Request $request)
+    {
+        $domisili = $request->get('domisili');
+        
+        if (!$domisili) {
+            return response()->json(['success' => false, 'message' => 'Domisili tidak dipilih']);
+        }
+        
+        $hasilTest = TestSession::with('user')
+            ->where('domisili_penempatan', $domisili)
+            ->whereNotNull('finished_at')
+            ->orderByDesc('score')
+            ->orderBy('finished_at')
+            ->get()
+            ->map(function ($session, $index) {
+                return [
+                    'rank' => $index + 1,
+                    'participant_number' => $session->user->participant_number ?? '-',
+                    'name' => $session->user->name,
+                    'category' => $session->category,
+                    'domisili_penempatan' => $session->domisili_penempatan,
+                    'score' => $session->score,
+                    'finished_at' => $session->finished_at->format('d M Y H:i'),
+                ];
+            });
+        
+        return response()->json([
+            'success' => true,
+            'data' => $hasilTest,
+            'count' => $hasilTest->count()
+        ]);
     }
 
     /**

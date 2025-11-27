@@ -109,6 +109,108 @@
         <div class="mt-8">
             {{ $news->links() }}
         </div>
+        
+        <!-- Section: Pengumuman Hasil Test -->
+        <div class="mt-16" data-aos="fade-up">
+            <div class="text-center mb-8">
+                <span class="inline-flex items-center px-4 py-2 bg-green-500/20 text-green-300 rounded-full text-sm font-medium mb-4">
+                    <i class="bi bi-trophy me-2"></i> Hasil Seleksi
+                </span>
+                <h2 class="text-2xl md:text-3xl font-bold text-white mb-4">Pengumuman Hasil Test</h2>
+                <p class="text-white/80 max-w-2xl mx-auto">Lihat hasil test berdasarkan domisili penempatan</p>
+            </div>
+            
+            <div class="glass-section rounded-2xl p-6">
+                <!-- Domisili Selector -->
+                <div class="flex flex-col md:flex-row items-center gap-4 mb-6">
+                    <label class="text-gray-900 font-medium">
+                        <i class="bi bi-geo-alt me-2"></i> Pilih Domisili Penempatan:
+                    </label>
+                    <select id="domisili-hasil-select" class="px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900 min-w-[200px]">
+                        <option value="">-- Pilih Domisili --</option>
+                        @foreach($domisiliList as $dom)
+                        <option value="{{ $dom }}" {{ $selectedDomisili == $dom ? 'selected' : '' }}>{{ $dom }}</option>
+                        @endforeach
+                    </select>
+                    <button type="button" onclick="loadHasilTest()" class="px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl font-medium hover:shadow-lg transition-all">
+                        <i class="bi bi-search me-2"></i> Tampilkan
+                    </button>
+                </div>
+                
+                <!-- Results Table -->
+                <div id="hasil-test-container">
+                    @if($selectedDomisili)
+                        @if($hasilTest->count() > 0)
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead>
+                                    <tr class="bg-gray-100 text-gray-700 text-left">
+                                        <th class="px-4 py-3 rounded-l-xl font-semibold">Rank</th>
+                                        <th class="px-4 py-3 font-semibold">No. Peserta</th>
+                                        <th class="px-4 py-3 font-semibold">Nama</th>
+                                        <th class="px-4 py-3 font-semibold">Kategori</th>
+                                        <th class="px-4 py-3 font-semibold">Domisili Penempatan</th>
+                                        <th class="px-4 py-3 font-semibold">Skor</th>
+                                        <th class="px-4 py-3 rounded-r-xl font-semibold">Tanggal Selesai</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200">
+                                    @foreach($hasilTest as $index => $session)
+                                    <tr class="hover:bg-gray-50 transition-colors">
+                                        <td class="px-4 py-3 text-gray-900">
+                                            @if($index == 0)
+                                            <span class="inline-flex items-center justify-center w-8 h-8 bg-yellow-500 text-white rounded-full font-bold">
+                                                <i class="bi bi-trophy-fill"></i>
+                                            </span>
+                                            @elseif($index == 1)
+                                            <span class="inline-flex items-center justify-center w-8 h-8 bg-gray-400 text-white rounded-full font-bold">2</span>
+                                            @elseif($index == 2)
+                                            <span class="inline-flex items-center justify-center w-8 h-8 bg-amber-600 text-white rounded-full font-bold">3</span>
+                                            @else
+                                            <span class="inline-flex items-center justify-center w-8 h-8 bg-gray-200 text-gray-700 rounded-full font-bold">{{ $index + 1 }}</span>
+                                            @endif
+                                        </td>
+                                        <td class="px-4 py-3 text-gray-900 font-mono">{{ $session->user->participant_number ?? '-' }}</td>
+                                        <td class="px-4 py-3 text-gray-900 font-medium">{{ $session->user->name }}</td>
+                                        <td class="px-4 py-3">
+                                            <span class="px-2 py-1 rounded-full text-xs font-medium
+                                                @if($session->category == 'TWK') bg-blue-100 text-blue-700
+                                                @elseif($session->category == 'TIU') bg-green-100 text-green-700
+                                                @elseif($session->category == 'TKP') bg-purple-100 text-purple-700
+                                                @else bg-orange-100 text-orange-700 @endif">
+                                                {{ $session->category }}
+                                            </span>
+                                        </td>
+                                        <td class="px-4 py-3 text-gray-900">{{ $session->domisili_penempatan }}</td>
+                                        <td class="px-4 py-3">
+                                            <span class="px-3 py-1 rounded-full text-sm font-bold
+                                                @if($session->score >= 80) bg-green-100 text-green-700
+                                                @elseif($session->score >= 60) bg-yellow-100 text-yellow-700
+                                                @else bg-red-100 text-red-700 @endif">
+                                                {{ $session->score }}
+                                            </span>
+                                        </td>
+                                        <td class="px-4 py-3 text-gray-600 text-sm">{{ $session->finished_at->format('d M Y H:i') }}</td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                        @else
+                        <div class="text-center py-12">
+                            <i class="bi bi-inbox text-5xl text-gray-400"></i>
+                            <p class="text-gray-600 mt-4">Belum ada peserta yang menyelesaikan test untuk domisili <strong>{{ $selectedDomisili }}</strong>.</p>
+                        </div>
+                        @endif
+                    @else
+                    <div class="text-center py-12">
+                        <i class="bi bi-search text-5xl text-gray-400"></i>
+                        <p class="text-gray-600 mt-4">Pilih domisili penempatan untuk melihat hasil test.</p>
+                    </div>
+                    @endif
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -190,6 +292,99 @@
 
 @push('scripts')
 <script>
+// Load Hasil Test via AJAX
+function loadHasilTest() {
+    const domisili = $('#domisili-hasil-select').val();
+    
+    if (!domisili) {
+        alert('Silakan pilih domisili terlebih dahulu');
+        return;
+    }
+    
+    $('#hasil-test-container').html(`
+        <div class="text-center py-12">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+            <p class="text-gray-600 mt-4">Memuat data...</p>
+        </div>
+    `);
+    
+    $.get(`/berita/hasil-test?domisili=${encodeURIComponent(domisili)}`, function(response) {
+        if (response.success) {
+            if (response.data.length > 0) {
+                let html = `
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="bg-gray-100 text-gray-700 text-left">
+                                    <th class="px-4 py-3 rounded-l-xl font-semibold">Rank</th>
+                                    <th class="px-4 py-3 font-semibold">No. Peserta</th>
+                                    <th class="px-4 py-3 font-semibold">Nama</th>
+                                    <th class="px-4 py-3 font-semibold">Kategori</th>
+                                    <th class="px-4 py-3 font-semibold">Domisili Penempatan</th>
+                                    <th class="px-4 py-3 font-semibold">Skor</th>
+                                    <th class="px-4 py-3 rounded-r-xl font-semibold">Tanggal Selesai</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                `;
+                
+                response.data.forEach((item, index) => {
+                    let rankBadge = '';
+                    if (index === 0) {
+                        rankBadge = '<span class="inline-flex items-center justify-center w-8 h-8 bg-yellow-500 text-white rounded-full font-bold"><i class="bi bi-trophy-fill"></i></span>';
+                    } else if (index === 1) {
+                        rankBadge = '<span class="inline-flex items-center justify-center w-8 h-8 bg-gray-400 text-white rounded-full font-bold">2</span>';
+                    } else if (index === 2) {
+                        rankBadge = '<span class="inline-flex items-center justify-center w-8 h-8 bg-amber-600 text-white rounded-full font-bold">3</span>';
+                    } else {
+                        rankBadge = `<span class="inline-flex items-center justify-center w-8 h-8 bg-gray-200 text-gray-700 rounded-full font-bold">${index + 1}</span>`;
+                    }
+                    
+                    let categoryClass = '';
+                    if (item.category === 'TWK') categoryClass = 'bg-blue-100 text-blue-700';
+                    else if (item.category === 'TIU') categoryClass = 'bg-green-100 text-green-700';
+                    else if (item.category === 'TKP') categoryClass = 'bg-purple-100 text-purple-700';
+                    else categoryClass = 'bg-orange-100 text-orange-700';
+                    
+                    let scoreClass = '';
+                    if (item.score >= 80) scoreClass = 'bg-green-100 text-green-700';
+                    else if (item.score >= 60) scoreClass = 'bg-yellow-100 text-yellow-700';
+                    else scoreClass = 'bg-red-100 text-red-700';
+                    
+                    html += `
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="px-4 py-3 text-gray-900">${rankBadge}</td>
+                            <td class="px-4 py-3 text-gray-900 font-mono">${item.participant_number}</td>
+                            <td class="px-4 py-3 text-gray-900 font-medium">${item.name}</td>
+                            <td class="px-4 py-3"><span class="px-2 py-1 rounded-full text-xs font-medium ${categoryClass}">${item.category}</span></td>
+                            <td class="px-4 py-3 text-gray-900">${item.domisili_penempatan}</td>
+                            <td class="px-4 py-3"><span class="px-3 py-1 rounded-full text-sm font-bold ${scoreClass}">${item.score}</span></td>
+                            <td class="px-4 py-3 text-gray-600 text-sm">${item.finished_at}</td>
+                        </tr>
+                    `;
+                });
+                
+                html += '</tbody></table></div>';
+                $('#hasil-test-container').html(html);
+            } else {
+                $('#hasil-test-container').html(`
+                    <div class="text-center py-12">
+                        <i class="bi bi-inbox text-5xl text-gray-400"></i>
+                        <p class="text-gray-600 mt-4">Belum ada peserta yang menyelesaikan test untuk domisili <strong>${domisili}</strong>.</p>
+                    </div>
+                `);
+            }
+        }
+    }).fail(function() {
+        $('#hasil-test-container').html(`
+            <div class="text-center py-12">
+                <i class="bi bi-exclamation-circle text-5xl text-red-400"></i>
+                <p class="text-gray-600 mt-4">Terjadi kesalahan. Silakan coba lagi.</p>
+            </div>
+        `);
+    });
+}
+
 // View News Modal
 function openNewsModal(id) {
     $.get(`/berita/${id}`, function(response) {

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Question;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class QuestionController extends Controller
 {
@@ -19,9 +20,18 @@ class QuestionController extends Controller
             $query->byCategory($request->category);
         }
         
+        if ($request->has('search') && $request->search) {
+            $query->where('question_text', 'like', '%' . $request->search . '%');
+        }
+        
         $questions = $query->paginate(10);
         
-        return view('admin.questions.index', compact('questions'));
+        // Get counts for statistics
+        $twkCount = Question::where('category', 'TWK')->count();
+        $tiuCount = Question::where('category', 'TIU')->count();
+        $tkpCount = Question::where('category', 'TKP')->count();
+        
+        return view('admin.questions.index', compact('questions', 'twkCount', 'tiuCount', 'tkpCount'));
     }
 
     /**
@@ -37,7 +47,17 @@ class QuestionController extends Controller
             'option_c' => 'required|string|max:500',
             'option_d' => 'required|string|max:500',
             'correct_option' => 'required|in:a,b,c,d',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'is_math' => 'nullable|boolean',
+            'math_latex' => 'nullable|string',
         ]);
+
+        // Handle image upload
+        if ($request->hasFile('image')) {
+            $validated['image_path'] = $request->file('image')->store('questions', 'public');
+        }
+        
+        $validated['is_math'] = $request->has('is_math');
 
         Question::create($validated);
 
@@ -61,7 +81,30 @@ class QuestionController extends Controller
             'option_c' => 'required|string|max:500',
             'option_d' => 'required|string|max:500',
             'correct_option' => 'required|in:a,b,c,d',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'is_math' => 'nullable|boolean',
+            'math_latex' => 'nullable|string',
+            'remove_image' => 'nullable|boolean',
         ]);
+
+        // Handle image removal
+        if ($request->has('remove_image') && $request->remove_image) {
+            if ($question->image_path) {
+                Storage::disk('public')->delete($question->image_path);
+            }
+            $validated['image_path'] = null;
+        }
+        
+        // Handle new image upload
+        if ($request->hasFile('image')) {
+            // Delete old image if exists
+            if ($question->image_path) {
+                Storage::disk('public')->delete($question->image_path);
+            }
+            $validated['image_path'] = $request->file('image')->store('questions', 'public');
+        }
+        
+        $validated['is_math'] = $request->has('is_math');
 
         $question->update($validated);
 
@@ -77,6 +120,11 @@ class QuestionController extends Controller
      */
     public function destroy(Question $question)
     {
+        // Delete image if exists
+        if ($question->image_path) {
+            Storage::disk('public')->delete($question->image_path);
+        }
+        
         $question->delete();
 
         if (request()->ajax()) {
