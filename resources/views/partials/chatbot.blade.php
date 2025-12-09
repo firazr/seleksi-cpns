@@ -6,16 +6,15 @@
 <!-- Chatbot Modal -->
 <div id="chatbot-modal" class="fixed inset-0 z-[1001] hidden">
     <div class="modal-backdrop absolute inset-0" onclick="closeChatbot()"></div>
-    <div class="absolute bottom-24 right-6 w-96 max-w-[calc(100vw-3rem)] bg-white rounded-2xl shadow-2xl overflow-hidden transform transition-all">
+    <div class="absolute bottom-24 right-6 w-96 max-w-[calc(100vw-3rem)] bg-white rounded-2xl shadow-2xl overflow-hidden transform transition-all flex flex-col" style="height: 500px;">
         <!-- Header -->
-        <div class="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4 flex items-center justify-between">
+        <div class="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4 flex items-center justify-between flex-shrink-0">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
                     <i class="bi bi-robot text-white text-xl"></i>
                 </div>
                 <div>
                     <h3 class="font-semibold text-white">CPNS Assistant</h3>
-                    <p class="text-xs text-white/80">Siap membantu Anda</p>
                 </div>
             </div>
             <button onclick="closeChatbot()" class="text-white/80 hover:text-white transition-colors">
@@ -23,81 +22,64 @@
             </button>
         </div>
         
-        <!-- Chat Content -->
-        <div class="p-6 max-h-96 overflow-y-auto">
-            <!-- Bot Message -->
-            <div class="flex gap-3 mb-4">
+        <!-- Chat Messages -->
+        <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4">
+            <!-- Welcome Message -->
+            <div class="flex gap-3">
                 <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
                     <i class="bi bi-robot text-blue-600"></i>
                 </div>
                 <div class="bg-gray-100 rounded-2xl rounded-tl-none px-4 py-3 max-w-[80%]">
-                    <p class="text-gray-700 text-sm">Halo! Selamat datang di Portal CPNS 2025. Ada yang bisa saya bantu?</p>
+                    <p class="text-gray-700 text-sm">Halo! Saya CPNS Assistant. Ada yang bisa saya bantu seputar CPNS? 😊</p>
                 </div>
             </div>
             
-            <!-- Info Card -->
-            <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-4">
-                <h4 class="font-semibold text-blue-800 mb-2 flex items-center gap-2">
-                    <i class="bi bi-info-circle"></i> Tentang CPNS
-                </h4>
-                <p class="text-sm text-blue-700 mb-3">
-                    CPNS (Calon Pegawai Negeri Sipil) adalah proses seleksi untuk menjadi Aparatur Sipil Negara. Seleksi meliputi:
-                </p>
-                <ul class="text-sm text-blue-700 space-y-1">
-                    <li class="flex items-start gap-2">
-                        <i class="bi bi-check-circle-fill text-green-500 mt-0.5"></i>
-                        <span><strong>TWK</strong> - Tes Wawasan Kebangsaan</span>
-                    </li>
-                    <li class="flex items-start gap-2">
-                        <i class="bi bi-check-circle-fill text-green-500 mt-0.5"></i>
-                        <span><strong>TIU</strong> - Tes Intelegensia Umum</span>
-                    </li>
-                    <li class="flex items-start gap-2">
-                        <i class="bi bi-check-circle-fill text-green-500 mt-0.5"></i>
-                        <span><strong>TKP</strong> - Tes Karakteristik Pribadi</span>
-                    </li>
-                </ul>
-            </div>
-            
-            <!-- Tips Card -->
-            <div class="bg-green-50 border border-green-200 rounded-xl p-4 mb-4">
-                <h4 class="font-semibold text-green-800 mb-2 flex items-center gap-2">
-                    <i class="bi bi-lightbulb"></i> Tips Persiapan
-                </h4>
-                <ul class="text-sm text-green-700 space-y-1">
-                    <li>• Pelajari materi TWK, TIU, dan TKP secara rutin</li>
-                    <li>• Latihan soal-soal tahun sebelumnya</li>
-                    <li>• Jaga kesehatan fisik dan mental</li>
-                    <li>• Persiapkan dokumen dengan lengkap</li>
-                </ul>
-            </div>
-            
-            <!-- GPT Suggestion -->
-            <div class="bg-purple-50 border border-purple-200 rounded-xl p-4">
-                <h4 class="font-semibold text-purple-800 mb-2 flex items-center gap-2">
-                    <i class="bi bi-search"></i> Cari Info Lebih Detail
-                </h4>
-                <p class="text-sm text-purple-700 mb-3">
-                    Untuk informasi lebih lengkap tentang CPNS, kamu bisa bertanya kepada AI seperti ChatGPT atau cari di mesin pencari.
-                </p>
-                <a href="https://chat.openai.com" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg text-sm hover:bg-purple-700 transition-colors">
-                    <i class="bi bi-box-arrow-up-right"></i> Buka ChatGPT
-                </a>
+            <!-- Quick Actions -->
+            <div class="flex flex-wrap gap-2 pl-11">
+                <button onclick="sendQuickMessage('Apa itu CPNS?')" class="quick-action-btn px-3 py-1.5 bg-blue-50 text-blue-600 rounded-full text-xs hover:bg-blue-100 transition-colors">
+                    Apa itu CPNS?
+                </button>
+                <button onclick="sendQuickMessage('Tips lolos TWK')" class="quick-action-btn px-3 py-1.5 bg-blue-50 text-blue-600 rounded-full text-xs hover:bg-blue-100 transition-colors">
+                    Tips lolos TWK
+                </button>
+                <button onclick="sendQuickMessage('Materi TIU apa saja?')" class="quick-action-btn px-3 py-1.5 bg-blue-50 text-blue-600 rounded-full text-xs hover:bg-blue-100 transition-colors">
+                    Materi TIU
+                </button>
+                <button onclick="sendQuickMessage('Passing grade CPNS 2025')" class="quick-action-btn px-3 py-1.5 bg-blue-50 text-blue-600 rounded-full text-xs hover:bg-blue-100 transition-colors">
+                    Passing Grade
+                </button>
             </div>
         </div>
         
-        <!-- Footer -->
-        <div class="px-6 py-4 bg-gray-50 border-t">
-            <p class="text-xs text-gray-500 text-center">
-                Ini adalah asisten virtual dengan informasi statis. Untuk pertanyaan lebih lanjut, hubungi call center resmi.
-            </p>
+        <!-- Input Area -->
+        <div class="px-4 py-3 bg-gray-50 border-t flex-shrink-0">
+            <form id="chat-form" class="flex gap-2">
+                @csrf
+                <input 
+                    type="text" 
+                    id="chat-input" 
+                    placeholder="Ketik pertanyaan Anda..." 
+                    class="flex-1 px-4 py-2 bg-white border border-gray-200 rounded-full text-sm text-gray-900 placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                    autocomplete="off"
+                >
+                <button 
+                    type="submit" 
+                    id="send-btn"
+                    class="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+                >
+                    <i class="bi bi-send-fill"></i>
+                </button>
+            </form>
         </div>
     </div>
 </div>
 
 <script>
+let isProcessing = false;
+
 function openChatbot() {
     document.getElementById('chatbot-modal').classList.remove('hidden');
+    document.getElementById('chat-input').focus();
 }
 
 function closeChatbot() {
@@ -112,6 +94,145 @@ document.getElementById('chatbot-btn').addEventListener('click', function() {
 document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
         closeChatbot();
+    }
+});
+
+// Send quick message
+function sendQuickMessage(message) {
+    document.getElementById('chat-input').value = message;
+    document.getElementById('chat-form').dispatchEvent(new Event('submit'));
+}
+
+// Add user message to chat
+function addUserMessage(message) {
+    const chatMessages = document.getElementById('chat-messages');
+    const messageDiv = document.createElement('div');
+    messageDiv.className = 'flex gap-3 justify-end';
+    messageDiv.innerHTML = `
+        <div class="bg-blue-600 text-white rounded-2xl rounded-tr-none px-4 py-3 max-w-[80%]">
+            <p class="text-sm">${escapeHtml(message)}</p>
+        </div>
+        <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
+            <i class="bi bi-person-fill text-white"></i>
+        </div>
+    `;
+    chatMessages.appendChild(messageDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+// Add bot message to chat
+function addBotMessage(message) {
+    const chatMessages = document.getElementById('chat-messages');
+    const messageDiv = document.createElement('div');
+    messageDiv.className = 'flex gap-3';
+    messageDiv.innerHTML = `
+        <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+            <i class="bi bi-robot text-blue-600"></i>
+        </div>
+        <div class="bg-gray-100 rounded-2xl rounded-tl-none px-4 py-3 max-w-[80%]">
+            <p class="text-gray-700 text-sm whitespace-pre-wrap">${escapeHtml(message)}</p>
+        </div>
+    `;
+    chatMessages.appendChild(messageDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+// Add typing indicator
+function addTypingIndicator() {
+    const chatMessages = document.getElementById('chat-messages');
+    const typingDiv = document.createElement('div');
+    typingDiv.id = 'typing-indicator';
+    typingDiv.className = 'flex gap-3';
+    typingDiv.innerHTML = `
+        <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+            <i class="bi bi-robot text-blue-600"></i>
+        </div>
+        <div class="bg-gray-100 rounded-2xl rounded-tl-none px-4 py-3">
+            <div class="flex gap-1">
+                <span class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0ms;"></span>
+                <span class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 150ms;"></span>
+                <span class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 300ms;"></span>
+            </div>
+        </div>
+    `;
+    chatMessages.appendChild(typingDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+// Remove typing indicator
+function removeTypingIndicator() {
+    const typingIndicator = document.getElementById('typing-indicator');
+    if (typingIndicator) {
+        typingIndicator.remove();
+    }
+}
+
+// Escape HTML to prevent XSS
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// Handle form submission
+document.getElementById('chat-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    if (isProcessing) return;
+    
+    const input = document.getElementById('chat-input');
+    const sendBtn = document.getElementById('send-btn');
+    const message = input.value.trim();
+    
+    if (!message) return;
+    
+    // Hide quick actions after first message
+    document.querySelectorAll('.quick-action-btn').forEach(btn => {
+        btn.parentElement.style.display = 'none';
+    });
+    
+    // Add user message
+    addUserMessage(message);
+    input.value = '';
+    
+    // Disable input while processing
+    isProcessing = true;
+    input.disabled = true;
+    sendBtn.disabled = true;
+    
+    // Show typing indicator
+    addTypingIndicator();
+    
+    try {
+        const response = await fetch('{{ route("chatbot.send") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({ message: message })
+        });
+        
+        const data = await response.json();
+        
+        removeTypingIndicator();
+        
+        if (data.success) {
+            addBotMessage(data.message);
+        } else {
+            addBotMessage('Maaf, terjadi kesalahan: ' + (data.message || 'Silakan coba lagi.'));
+        }
+    } catch (error) {
+        removeTypingIndicator();
+        addBotMessage('Maaf, terjadi kesalahan koneksi. Silakan coba lagi.');
+        console.error('Chat error:', error);
+    } finally {
+        // Re-enable input
+        isProcessing = false;
+        input.disabled = false;
+        sendBtn.disabled = false;
+        input.focus();
     }
 });
 </script>

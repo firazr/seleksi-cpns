@@ -16,13 +16,18 @@ class TestSession extends Model
         'started_at',
         'finished_at',
         'score',
+        'score_twk',
+        'score_tiu',
+        'score_tkp',
         'answers',
+        'shuffled_questions',
     ];
 
     protected $casts = [
         'started_at' => 'datetime',
         'finished_at' => 'datetime',
         'answers' => 'array',
+        'shuffled_questions' => 'array',
     ];
 
     /**

@@ -29,19 +29,27 @@ class QuizController extends Controller
             return redirect()->route('quiz.result', $session);
         }
 
-        // Get questions based on category
-        $questions = Question::byCategory($session->category)
-            ->inRandomOrder()
-            ->get();
+        // Get shuffled questions from session
+        $shuffledQuestions = $session->shuffled_questions ?? [];
 
-        if ($questions->isEmpty()) {
+        if (empty($shuffledQuestions)) {
             return redirect()->route('test-cpns.index')
-                ->with('error', 'Belum ada soal untuk kategori ini.');
+                ->with('error', 'Terjadi kesalahan pada sesi ujian.');
         }
 
         $answers = $session->answers ?? [];
+        
+        // Group questions by category for display
+        $questionsByCategory = [];
+        foreach ($shuffledQuestions as $idx => $q) {
+            $cat = $q['category'];
+            if (!isset($questionsByCategory[$cat])) {
+                $questionsByCategory[$cat] = [];
+            }
+            $questionsByCategory[$cat][] = array_merge($q, ['index' => $idx]);
+        }
 
-        return view('quiz.show', compact('session', 'questions', 'answers'));
+        return view('quiz.show', compact('session', 'shuffledQuestions', 'answers', 'questionsByCategory'));
     }
 
     /**
@@ -58,12 +66,12 @@ class QuizController extends Controller
         }
 
         $validated = $request->validate([
-            'question_id' => 'required|exists:questions,id',
+            'question_index' => 'required|integer|min:0',
             'answer' => 'required|in:a,b,c,d',
         ]);
 
         $answers = $session->answers ?? [];
-        $answers[$validated['question_id']] = $validated['answer'];
+        $answers[$validated['question_index']] = $validated['answer'];
         
         $session->update(['answers' => $answers]);
 
@@ -88,12 +96,7 @@ class QuizController extends Controller
         $session->update(['answers' => $formAnswers]);
 
         // Calculate score
-        $score = $this->calculateScore($session);
-
-        $session->update([
-            'finished_at' => now(),
-            'score' => $score,
-        ]);
+        $this->calculateAndFinishSession($session);
 
         return redirect()->route('quiz.result', $session);
     }
@@ -111,23 +114,57 @@ class QuizController extends Controller
             return redirect()->route('quiz.show', $session);
         }
 
-        $questions = Question::byCategory($session->category)->get();
+        $shuffledQuestions = $session->shuffled_questions ?? [];
         $answers = $session->answers ?? [];
         
-        $total = $questions->count();
-        $correct = 0;
+        // Build detailed results
+        $questionResults = [];
+        $categoryStats = [
+            'TWK' => ['correct' => 0, 'total' => 0],
+            'TIU' => ['correct' => 0, 'total' => 0],
+            'TKP' => ['correct' => 0, 'total' => 0],
+        ];
         
-        foreach ($questions as $question) {
-            $userAnswer = $answers[$question->id] ?? null;
-            if ($userAnswer && strtoupper($userAnswer) === strtoupper($question->correct_option)) {
-                $correct++;
+        foreach ($shuffledQuestions as $idx => $qData) {
+            $category = $qData['category'];
+            $categoryStats[$category]['total']++;
+            
+            $userAnswer = $answers[$idx] ?? null;
+            $isCorrect = $userAnswer && $userAnswer === $qData['correct_display'];
+            
+            if ($isCorrect) {
+                $categoryStats[$category]['correct']++;
             }
+            
+            // Get original answer text for display
+            $originalKey = $userAnswer ? ($qData['option_mapping'][$userAnswer] ?? null) : null;
+            
+            $questionResults[] = [
+                'index' => $idx,
+                'category' => $category,
+                'question_text' => $qData['question_text'],
+                'image_path' => $qData['image_path'] ?? null,
+                'is_math' => $qData['is_math'] ?? false,
+                'math_latex' => $qData['math_latex'] ?? null,
+                'options' => $qData['options'],
+                'user_answer' => $userAnswer,
+                'correct_answer' => $qData['correct_display'],
+                'is_correct' => $isCorrect,
+            ];
         }
         
+        $total = count($shuffledQuestions);
+        $correct = array_sum(array_column($categoryStats, 'correct'));
         $wrong = $total - $correct;
-        $score = $session->score ?? ($total > 0 ? round(($correct / $total) * 100, 1) : 0);
 
-        return view('quiz.result', compact('session', 'score', 'correct', 'wrong', 'total'));
+        return view('quiz.result', compact(
+            'session', 
+            'questionResults', 
+            'categoryStats',
+            'total', 
+            'correct', 
+            'wrong'
+        ));
     }
 
     /**
@@ -136,31 +173,45 @@ class QuizController extends Controller
     protected function autoSubmit(TestSession $session)
     {
         if (!$session->isCompleted()) {
-            $score = $this->calculateScore($session);
-            $session->update([
-                'finished_at' => now(),
-                'score' => $score,
-            ]);
+            $this->calculateAndFinishSession($session);
         }
     }
 
     /**
-     * Calculate score
+     * Calculate score and finish session
      */
-    protected function calculateScore(TestSession $session): int
+    protected function calculateAndFinishSession(TestSession $session): void
     {
-        $questions = Question::byCategory($session->category)->get();
+        $shuffledData = $session->shuffled_questions ?? [];
         $answers = $session->answers ?? [];
         
-        $score = 0;
-        $pointsPerQuestion = 100 / max(1, $questions->count());
-
-        foreach ($questions as $question) {
-            if (isset($answers[$question->id]) && $question->isCorrect($answers[$question->id])) {
-                $score += $pointsPerQuestion;
+        $scores = ['TWK' => 0, 'TIU' => 0, 'TKP' => 0];
+        $counts = ['TWK' => 0, 'TIU' => 0, 'TKP' => 0];
+        
+        foreach ($shuffledData as $idx => $qData) {
+            $category = $qData['category'];
+            $counts[$category]++;
+            
+            $userAnswer = $answers[$idx] ?? null;
+            if ($userAnswer && isset($qData['correct_display']) && $userAnswer === $qData['correct_display']) {
+                $scores[$category]++;
             }
         }
-
-        return round($score);
+        
+        // Calculate percentage per category
+        $twkScore = $counts['TWK'] > 0 ? round(($scores['TWK'] / $counts['TWK']) * 100, 1) : 0;
+        $tiuScore = $counts['TIU'] > 0 ? round(($scores['TIU'] / $counts['TIU']) * 100, 1) : 0;
+        $tkpScore = $counts['TKP'] > 0 ? round(($scores['TKP'] / $counts['TKP']) * 100, 1) : 0;
+        
+        // Total score is average of all categories
+        $totalScore = round(($twkScore + $tiuScore + $tkpScore) / 3, 1);
+        
+        $session->update([
+            'finished_at' => now(),
+            'score' => $totalScore,
+            'score_twk' => $twkScore,
+            'score_tiu' => $tiuScore,
+            'score_tkp' => $tkpScore,
+        ]);
     }
 }

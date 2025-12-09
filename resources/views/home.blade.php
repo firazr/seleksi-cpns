@@ -82,8 +82,8 @@
     <section class="container mx-auto px-4 lg:px-8 mb-16">
         <div class="glass-section rounded-3xl p-8 lg:p-12" data-aos="fade-up">
             <div class="text-center mb-12">
-                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Mengapa Memilih Portal Kami?</h2>
-                <p class="text-gray-600 max-w-2xl mx-auto">Portal CPNS resmi dengan berbagai fitur unggulan untuk mempersiapkan Anda menghadapi seleksi.</p>
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Keunggulan Platform Kami</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">Sistem seleksi CPNS terintegrasi dengan standar ujian resmi untuk memastikan proses rekrutmen yang transparan dan akurat.</p>
             </div>
             
             <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">

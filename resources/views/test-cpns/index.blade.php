@@ -70,65 +70,113 @@
                         </select>
                     </div>
                     
-                    <!-- Kategori Test -->
+                    <!-- Paket Ujian -->
                     <div class="mb-6">
                         <label class="block text-sm font-medium text-gray-700 mb-4">
-                            <i class="bi bi-list-check me-1"></i> Pilih Kategori Test
+                            <i class="bi bi-list-check me-1"></i> Paket Ujian
                         </label>
-                        <div class="grid grid-cols-2 gap-4">
-                            <label class="relative">
-                                <input type="radio" name="category" value="TWK" class="peer sr-only" required>
-                                <div class="p-4 border-2 border-gray-200 rounded-xl cursor-pointer transition-all peer-checked:border-blue-500 peer-checked:bg-blue-50 hover:border-gray-300">
-                                    <div class="text-center">
-                                        <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-2">
-                                            <i class="bi bi-book text-blue-600 text-xl"></i>
-                                        </div>
-                                        <h4 class="font-semibold text-gray-900">TWK</h4>
-                                        <p class="text-xs text-gray-500">Wawasan Kebangsaan</p>
+                        
+                        @php
+                            $hasCompleted = isset($completedSessions) && $completedSessions->count() > 0;
+                        @endphp
+                        
+                        <div class="p-6 border-2 rounded-xl {{ $hasCompleted ? 'border-green-300 bg-green-50' : 'border-blue-300 bg-gradient-to-br from-blue-50 to-indigo-50' }}">
+                            <div class="flex items-start gap-4">
+                                <div class="w-16 h-16 {{ $hasCompleted ? 'bg-green-200' : 'bg-gradient-to-br from-blue-500 to-indigo-600' }} rounded-xl flex items-center justify-center flex-shrink-0 relative">
+                                    <i class="bi bi-collection {{ $hasCompleted ? 'text-green-600' : 'text-white' }} text-2xl"></i>
+                                    @if($hasCompleted)
+                                    <div class="absolute -top-1 -right-1 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                                        <i class="bi bi-check text-white"></i>
                                     </div>
+                                    @endif
                                 </div>
-                            </label>
-                            
-                            <label class="relative">
-                                <input type="radio" name="category" value="TIU" class="peer sr-only">
-                                <div class="p-4 border-2 border-gray-200 rounded-xl cursor-pointer transition-all peer-checked:border-green-500 peer-checked:bg-green-50 hover:border-gray-300">
-                                    <div class="text-center">
-                                        <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mx-auto mb-2">
-                                            <i class="bi bi-lightbulb text-green-600 text-xl"></i>
-                                        </div>
-                                        <h4 class="font-semibold text-gray-900">TIU</h4>
-                                        <p class="text-xs text-gray-500">Intelegensia Umum</p>
+                                <div class="flex-1">
+                                    <h4 class="text-xl font-bold {{ $hasCompleted ? 'text-green-800' : 'text-gray-900' }}">Paket Lengkap CPNS</h4>
+                                    <p class="text-gray-600 mt-1">Simulasi ujian CPNS lengkap dengan 3 kategori</p>
+                                    
+                                    <div class="flex flex-wrap gap-2 mt-3">
+                                        <span class="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm">
+                                            <i class="bi bi-book me-1"></i> TWK - Wawasan Kebangsaan
+                                        </span>
+                                        <span class="inline-flex items-center px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm">
+                                            <i class="bi bi-lightbulb me-1"></i> TIU - Intelegensia Umum
+                                        </span>
+                                        <span class="inline-flex items-center px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm">
+                                            <i class="bi bi-person-check me-1"></i> TKP - Karakteristik Pribadi
+                                        </span>
                                     </div>
-                                </div>
-                            </label>
-                            
-                            <label class="relative">
-                                <input type="radio" name="category" value="TKP" class="peer sr-only">
-                                <div class="p-4 border-2 border-gray-200 rounded-xl cursor-pointer transition-all peer-checked:border-purple-500 peer-checked:bg-purple-50 hover:border-gray-300">
-                                    <div class="text-center">
-                                        <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mx-auto mb-2">
-                                            <i class="bi bi-person-check text-purple-600 text-xl"></i>
-                                        </div>
-                                        <h4 class="font-semibold text-gray-900">TKP</h4>
-                                        <p class="text-xs text-gray-500">Karakteristik Pribadi</p>
+                                    
+                                    @if($hasCompleted)
+                                    <div class="mt-4 p-3 bg-green-100 rounded-lg">
+                                        <p class="text-green-800 font-medium flex items-center gap-2">
+                                            <i class="bi bi-check-circle-fill"></i>
+                                            Anda sudah menyelesaikan ujian ini
+                                        </p>
                                     </div>
-                                </div>
-                            </label>
-                            
-                            <label class="relative">
-                                <input type="radio" name="category" value="full" class="peer sr-only">
-                                <div class="p-4 border-2 border-gray-200 rounded-xl cursor-pointer transition-all peer-checked:border-orange-500 peer-checked:bg-orange-50 hover:border-gray-300">
-                                    <div class="text-center">
-                                        <div class="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center mx-auto mb-2">
-                                            <i class="bi bi-collection text-orange-600 text-xl"></i>
+                                    @else
+                                    <div class="mt-4 grid grid-cols-3 gap-3 text-center text-sm">
+                                        <div class="p-2 bg-white/60 rounded-lg">
+                                            <div class="font-bold text-gray-900">100</div>
+                                            <div class="text-gray-500 text-xs">Total Soal</div>
                                         </div>
-                                        <h4 class="font-semibold text-gray-900">Paket Lengkap</h4>
-                                        <p class="text-xs text-gray-500">TWK + TIU + TKP</p>
+                                        <div class="p-2 bg-white/60 rounded-lg">
+                                            <div class="font-bold text-gray-900">90</div>
+                                            <div class="text-gray-500 text-xs">Menit</div>
+                                        </div>
+                                        <div class="p-2 bg-white/60 rounded-lg">
+                                            <div class="font-bold text-gray-900">1x</div>
+                                            <div class="text-gray-500 text-xs">Kesempatan</div>
+                                        </div>
                                     </div>
+                                    @endif
                                 </div>
-                            </label>
+                            </div>
                         </div>
                     </div>
+                    
+                    <!-- Completed Tests Summary -->
+                    @if(isset($completedSessions) && $completedSessions->count() > 0)
+                    <div class="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-xl">
+                        <h5 class="font-semibold text-blue-800 mb-3 flex items-center gap-2">
+                            <i class="bi bi-clipboard-check"></i> Riwayat Ujian Anda
+                        </h5>
+                        <div class="space-y-2">
+                            @foreach($completedSessions as $cs)
+                            <div class="p-3 bg-white rounded-lg border">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="font-medium text-gray-900">Paket Lengkap CPNS</span>
+                                    <span class="text-xs text-gray-500">{{ $cs->finished_at->format('d M Y, H:i') }}</span>
+                                </div>
+                                
+                                <!-- Per Category Scores -->
+                                <div class="grid grid-cols-3 gap-2 text-center text-sm mb-3">
+                                    <div class="p-2 bg-blue-50 rounded">
+                                        <div class="font-bold {{ ($cs->score_twk ?? 0) >= 65 ? 'text-green-600' : 'text-red-600' }}">{{ $cs->score_twk ?? 0 }}</div>
+                                        <div class="text-xs text-gray-500">TWK</div>
+                                    </div>
+                                    <div class="p-2 bg-green-50 rounded">
+                                        <div class="font-bold {{ ($cs->score_tiu ?? 0) >= 80 ? 'text-green-600' : 'text-red-600' }}">{{ $cs->score_tiu ?? 0 }}</div>
+                                        <div class="text-xs text-gray-500">TIU</div>
+                                    </div>
+                                    <div class="p-2 bg-purple-50 rounded">
+                                        <div class="font-bold {{ ($cs->score_tkp ?? 0) >= 166 ? 'text-green-600' : 'text-red-600' }}">{{ $cs->score_tkp ?? 0 }}</div>
+                                        <div class="text-xs text-gray-500">TKP</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex justify-between items-center">
+                                    <div class="font-bold text-lg {{ $cs->score >= 311 ? 'text-green-600' : 'text-red-600' }}">
+                                        Total: {{ number_format($cs->score, 0) }}
+                                    </div>
+                                    <a href="{{ route('quiz.result', $cs) }}" class="inline-flex items-center gap-1 px-3 py-1 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700">
+                                        <i class="bi bi-eye"></i> Lihat Detail
+                                    </a>
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+                    </div>
+                    @endif
                 </div>
                 
                 <!-- Instructions -->
@@ -192,9 +240,24 @@
             
             <!-- Submit Button -->
             <div class="mt-8 text-center" data-aos="fade-up">
+                @php
+                    $hasCompleted = isset($completedSessions) && $completedSessions->count() > 0;
+                @endphp
+                
+                @if($hasCompleted)
+                <div class="inline-flex flex-col items-center gap-4">
+                    <div class="px-8 py-4 bg-green-100 text-green-800 rounded-2xl font-semibold">
+                        <i class="bi bi-check-circle-fill me-2"></i> Anda telah menyelesaikan ujian
+                    </div>
+                    <a href="{{ route('berita.index') }}" class="inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all">
+                        <i class="bi bi-newspaper me-2"></i> Lihat Pengumuman Hasil
+                    </a>
+                </div>
+                @else
                 <button type="submit" class="inline-flex items-center justify-center px-12 py-5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl font-bold text-xl shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all">
-                    <i class="bi bi-play-circle me-3 text-2xl"></i> Mulai Test
+                    <i class="bi bi-play-circle me-3 text-2xl"></i> Mulai Ujian
                 </button>
+                @endif
             </div>
         </form>
     </div>

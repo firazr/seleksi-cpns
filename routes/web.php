@@ -9,6 +9,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\TestCpnsController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\Admin\QuestionController;
+use App\Http\Controllers\ChatbotController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,6 +24,9 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/berita', [NewsController::class, 'index'])->name('berita.index');
 Route::get('/berita/hasil-test', [NewsController::class, 'getHasilTest'])->name('berita.hasil-test');
 Route::get('/berita/{news}', [NewsController::class, 'show'])->name('berita.show');
+
+// Chatbot Route
+Route::post('/chatbot', [ChatbotController::class, 'chat'])->name('chatbot.send');
 
 // Profil Routes
 Route::get('/profil', [ProfileController::class, 'index'])->name('profil.index');
