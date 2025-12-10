@@ -9,6 +9,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\TestCpnsController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\Admin\QuestionController;
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\ChatbotController;
 
 /*
@@ -43,8 +44,8 @@ Route::middleware('guest')->group(function () {
 
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth');
 
-// Protected Routes - Peserta & Admin
-Route::middleware('auth')->group(function () {
+// Protected Routes - Peserta Only
+Route::middleware(['auth', 'peserta'])->group(function () {
     // Test CPNS
     Route::get('/test-cpns', [TestCpnsController::class, 'index'])->name('test-cpns.index');
     Route::post('/test-cpns/start', [TestCpnsController::class, 'start'])->name('test-cpns.start');
@@ -58,6 +59,10 @@ Route::middleware('auth')->group(function () {
 
 // Admin Routes
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    // Dashboard
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::post('/admin/create', [DashboardController::class, 'storeAdmin'])->name('store-admin');
+    
     // News Management
     Route::post('/berita', [NewsController::class, 'store'])->name('berita.store');
     Route::put('/berita/{news}', [NewsController::class, 'update'])->name('berita.update');
