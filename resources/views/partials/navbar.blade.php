@@ -22,13 +22,16 @@
                 </a>
                 
                 @auth
+                @if(!auth()->user()->isAdmin())
                 <a href="{{ route('test-cpns.index') }}" class="nav-link px-4 py-2 rounded-lg text-white/90 hover:text-white hover:bg-white/10 font-medium transition-all {{ request()->routeIs('test-cpns.*') ? 'bg-white/10' : '' }}">
                     <i class="bi bi-pencil-square me-1"></i> Test CPNS
                 </a>
-                
-                @if(auth()->user()->isAdmin())
-                <a href="{{ route('admin.questions.index') }}" class="nav-link px-4 py-2 rounded-lg text-white/90 hover:text-white hover:bg-white/10 font-medium transition-all {{ request()->routeIs('admin.*') ? 'bg-white/10' : '' }}">
-                    <i class="bi bi-gear me-1"></i> Admin
+                @else
+                <a href="{{ route('admin.dashboard') }}" class="nav-link px-4 py-2 rounded-lg text-white/90 hover:text-white hover:bg-white/10 font-medium transition-all {{ request()->routeIs('admin.dashboard') ? 'bg-white/10' : '' }}">
+                    <i class="bi bi-graph-up me-1"></i> Dashboard
+                </a>
+                <a href="{{ route('admin.questions.index') }}" class="nav-link px-4 py-2 rounded-lg text-white/90 hover:text-white hover:bg-white/10 font-medium transition-all {{ request()->routeIs('admin.questions.*') ? 'bg-white/10' : '' }}">
+                    <i class="bi bi-pencil me-1"></i> Manage Questions
                 </a>
                 @endif
                 @endauth
@@ -89,9 +92,18 @@
                 </a>
                 
                 @auth
+                @if(!auth()->user()->isAdmin())
                 <a href="{{ route('test-cpns.index') }}" class="flex items-center px-4 py-3 rounded-xl text-white/90 hover:text-white hover:bg-white/10 font-medium">
                     <i class="bi bi-pencil-square me-3"></i> Test CPNS
                 </a>
+                @else
+                <a href="{{ route('admin.dashboard') }}" class="flex items-center px-4 py-3 rounded-xl text-white/90 hover:text-white hover:bg-white/10 font-medium">
+                    <i class="bi bi-graph-up me-3"></i> Dashboard
+                </a>
+                <a href="{{ route('admin.questions.index') }}" class="flex items-center px-4 py-3 rounded-xl text-white/90 hover:text-white hover:bg-white/10 font-medium">
+                    <i class="bi bi-pencil me-3"></i> Manage Questions
+                </a>
+                @endif
                 <form action="{{ route('logout') }}" method="POST" class="mt-2">
                     @csrf
                     <button type="submit" class="w-full flex items-center px-4 py-3 rounded-xl bg-red-500/20 text-red-300 hover:bg-red-500/30 font-medium">
