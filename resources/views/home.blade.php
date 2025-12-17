@@ -10,7 +10,7 @@
             <div class="flex flex-col lg:flex-row items-center gap-12">
                 <div class="flex-1 text-center lg:text-left">
                     <span class="inline-flex items-center px-4 py-2 bg-blue-100 text-blue-700 rounded-full text-sm font-medium mb-6">
-                        <i class="bi bi-stars me-2"></i> Pendaftaran Dibuka 2025
+                        <i class="bi bi-stars me-2"></i> Pendaftaran Tahun 2025 Telah Dibuka
                     </span>
                     <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight mb-6">
                         Jadilah Bagian dari 
@@ -34,8 +34,11 @@
                         @endauth
                     </div>
                 </div>
-                <div class="flex-1" data-aos="fade-left" data-aos-delay="200">
-                    <img src="{{ asset('images/hero-cpns.png') }}" alt="CPNS 2025" class="w-full max-w-lg mx-auto rounded-2xl shadow-2xl">
+                <div class="flex-1 flex items-center justify-center" data-aos="fade-left" data-aos-delay="200">
+                    <div class="relative">
+                        <div class="absolute inset-0 bg-gradient-to-br from-blue-400/30 to-purple-500/30 rounded-full blur-3xl scale-125"></div>
+                        <img src="{{ asset('images/foto5bg.png') }}" alt="CPNS 2025" class="relative w-full max-w-xl lg:max-w-2xl mx-auto object-contain drop-shadow-2xl hover:scale-105 transition-transform duration-500">
+                    </div>
                 </div>
             </div>
         </div>
