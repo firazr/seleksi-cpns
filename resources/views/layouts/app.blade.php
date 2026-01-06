@@ -36,26 +36,15 @@
         * { font-family: 'Poppins', sans-serif; }
         html { scroll-behavior: smooth; }
         
-        /* Fixed Background */
+        /* Fixed Background Pattern */
         body {
-            background-image: url('{{ asset("images/background.jpg") }}');
+            background-color: #f1f5f9;
+            background-image: url('{{ asset("images/cpns-pattern.png") }}');
             background-attachment: fixed;
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
+            background-size: 350px auto;
+            background-position: top left;
+            background-repeat: repeat;
             min-height: 100vh;
-        }
-        
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(30, 58, 138, 0.75) 50%, rgba(88, 28, 135, 0.7) 100%);
-            z-index: -1;
-            pointer-events: none;
         }
         
         /* Glass Morphism */
@@ -76,6 +65,60 @@
             background: rgba(15, 23, 42, 0.9);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
+        }
+        
+        /* Glass White for Admin pages */
+        .glass-white {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        .glass-white h2,
+        .glass-white h3,
+        .glass-white h4,
+        .glass-white h5,
+        .glass-white .text-white {
+            color: #1f2937 !important;
+        }
+        
+        .glass-white .text-white\/60,
+        .glass-white p {
+            color: #6b7280 !important;
+        }
+        
+        .glass-white table th {
+            background: #f3f4f6 !important;
+            color: #374151 !important;
+        }
+        
+        .glass-white table td {
+            color: #374151 !important;
+        }
+        
+        .glass-white input,
+        .glass-white select {
+            background: #f9fafb !important;
+            color: #1f2937 !important;
+            border-color: #d1d5db !important;
+        }
+        
+        .glass-white input::placeholder {
+            color: #9ca3af !important;
+        }
+        
+        .glass-white .border-white\/30 {
+            border-color: #d1d5db !important;
+        }
+        
+        .glass-white .border-white\/20 {
+            border-color: #e5e7eb !important;
+        }
+        
+        .glass-white .bg-white\/10 {
+            background: #f3f4f6 !important;
         }
         
         /* Card Hover */
@@ -130,7 +173,7 @@
     
     @stack('styles')
 </head>
-<body class="font-poppins antialiased text-gray-100">
+<body class="font-poppins antialiased text-gray-800">
     <!-- Navbar -->
     @include('partials.navbar')
     

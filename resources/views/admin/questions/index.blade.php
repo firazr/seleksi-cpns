@@ -103,10 +103,10 @@
                     <tr class="hover:bg-white/5 transition-colors">
                         <td class="px-4 py-4 text-white">{{ $questions->firstItem() + $index }}</td>
                         <td class="px-4 py-4">
-                            <span class="px-3 py-1 rounded-full text-sm font-medium
-                                @if($question->category == 'TWK') bg-blue-500/30 text-blue-200
-                                @elseif($question->category == 'TIU') bg-green-500/30 text-green-200
-                                @else bg-purple-500/30 text-purple-200 @endif">
+                            <span class="px-3 py-1 rounded-full text-sm font-semibold
+                                @if($question->category == 'TWK') bg-blue-600 text-white
+                                @elseif($question->category == 'TIU') bg-green-600 text-white
+                                @else bg-purple-600 text-white @endif">
                                 {{ $question->category }}
                             </span>
                         </td>
@@ -122,13 +122,13 @@
                         </td>
                         <td class="px-4 py-4">
                             <div class="flex gap-2">
-                                <button onclick="viewQuestion({{ $question->id }})" class="p-2 rounded-lg bg-blue-500/30 text-blue-200 hover:bg-blue-500/50 transition-all" title="Lihat Detail">
+                                <button onclick="viewQuestion({{ $question->id }})" class="p-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-all" title="Lihat Detail">
                                     <i class="bi bi-eye"></i>
                                 </button>
-                                <button onclick="editQuestion({{ $question->id }})" class="p-2 rounded-lg bg-yellow-500/30 text-yellow-200 hover:bg-yellow-500/50 transition-all" title="Edit">
+                                <button onclick="editQuestion({{ $question->id }})" class="p-2 rounded-lg bg-yellow-500 text-white hover:bg-yellow-600 transition-all" title="Edit">
                                     <i class="bi bi-pencil"></i>
                                 </button>
-                                <button onclick="confirmDelete({{ $question->id }})" class="p-2 rounded-lg bg-red-500/30 text-red-200 hover:bg-red-500/50 transition-all" title="Hapus">
+                                <button onclick="confirmDelete({{ $question->id }})" class="p-2 rounded-lg bg-red-600 text-white hover:bg-red-700 transition-all" title="Hapus">
                                     <i class="bi bi-trash"></i>
                                 </button>
                             </div>

@@ -4,8 +4,11 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Mail\OtpMail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rules\Password;
 
 class RegisterController extends Controller
@@ -70,7 +73,7 @@ class RegisterController extends Controller
         $ttl = $validated['tempat_lahir'] . ', ' . $tanggalFormatted;
 
         // Create user with role peserta
-        User::create([
+        $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
@@ -81,6 +84,19 @@ class RegisterController extends Controller
             'photo_path' => $photoPath,
         ]);
 
-        return redirect()->route('login')->with('success', 'Pendaftaran berhasil! Silakan login.');
+        // Generate OTP and send email
+        $otp = $user->generateOtp();
+
+        try {
+            Mail::to($user->email)->send(new OtpMail($otp, $user->name));
+        } catch (\Exception $e) {
+            // Log error but don't fail registration
+            \Log::error('Failed to send OTP email: ' . $e->getMessage());
+        }
+
+        // Login user automatically
+        Auth::login($user);
+
+        return redirect()->route('verification.notice')->with('success', 'Pendaftaran berhasil! Silakan verifikasi email Anda.');
     }
 }

@@ -47,11 +47,11 @@
     <!-- About CPNS Section -->
     <section class="container mx-auto px-4 lg:px-8 mb-16">
         <div class="text-center mb-12" data-aos="fade-up">
-            <span class="inline-flex items-center px-4 py-2 bg-white/20 text-white rounded-full text-sm font-medium mb-4">
+            <span class="inline-flex items-center px-4 py-2 bg-blue-100 text-blue-700 rounded-full text-sm font-medium mb-4">
                 <i class="bi bi-info-circle me-2"></i> Tentang CPNS
             </span>
-            <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Apa itu CPNS?</h2>
-            <p class="text-white/80 max-w-2xl mx-auto">Calon Pegawai Negeri Sipil adalah proses seleksi untuk mengisi formasi jabatan di lingkungan pemerintahan.</p>
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Apa itu CPNS?</h2>
+            <p class="text-gray-600 max-w-2xl mx-auto">Calon Pegawai Negeri Sipil adalah proses seleksi untuk mengisi formasi jabatan di lingkungan pemerintahan.</p>
         </div>
         
         <div class="grid md:grid-cols-3 gap-8">

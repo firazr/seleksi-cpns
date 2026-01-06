@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Carbon\Carbon;
 
 class User extends Authenticatable
 {
@@ -26,6 +27,9 @@ class User extends Authenticatable
         'domisili',
         'ttl',
         'photo_path',
+        'email_verified_at',
+        'otp_code',
+        'otp_expires_at',
     ];
 
     /**
@@ -79,7 +83,65 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
+            'otp_expires_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Generate OTP code
+     */
+    public function generateOtp(): string
+    {
+        $otp = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+        
+        $this->update([
+            'otp_code' => $otp,
+            'otp_expires_at' => Carbon::now()->addMinutes(10),
+        ]);
+
+        return $otp;
+    }
+
+    /**
+     * Verify OTP code
+     */
+    public function verifyOtp(string $otp): bool
+    {
+        if ($this->otp_code !== $otp) {
+            return false;
+        }
+
+        if (Carbon::now()->isAfter($this->otp_expires_at)) {
+            return false;
+        }
+
+        $this->update([
+            'email_verified_at' => Carbon::now(),
+            'otp_code' => null,
+            'otp_expires_at' => null,
+        ]);
+
+        return true;
+    }
+
+    /**
+     * Check if email is verified
+     */
+    public function hasVerifiedEmail(): bool
+    {
+        return $this->email_verified_at !== null;
+    }
+
+    /**
+     * Check if OTP is expired
+     */
+    public function isOtpExpired(): bool
+    {
+        if (!$this->otp_expires_at) {
+            return true;
+        }
+
+        return Carbon::now()->isAfter($this->otp_expires_at);
     }
 }

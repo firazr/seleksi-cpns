@@ -1,10 +1,10 @@
-<nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-transparent backdrop-blur-sm">
+<nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-gradient-to-r from-blue-700 via-indigo-700 to-purple-700 shadow-lg">
     <div class="container mx-auto px-4 lg:px-8">
         <div class="flex items-center justify-between h-16">
             <!-- Logo -->
             <a href="{{ route('home') }}" class="flex items-center space-x-3 group">
-                <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow">
-                    <i class="bi bi-building text-white text-xl"></i>
+                <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow">
+                    <i class="bi bi-building text-indigo-700 text-xl"></i>
                 </div>
                 <span class="logo-text text-xl font-bold text-white hidden sm:block">CPNS 2025</span>
             </a>
